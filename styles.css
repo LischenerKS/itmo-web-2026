@@ -31,3 +31,29 @@ body {
     flex-direction: column;
     gap: 8px;
 }
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+#results-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 600px;
+    background-color: white;
+}
+
+#results-table th,
+#results-table td {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: center;
+}
+
+#results-table th {
+    background-color: #e9ecef;
+    font-weight: bold;
+}
