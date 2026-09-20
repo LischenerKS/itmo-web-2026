@@ -123,11 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         //circle sector
-        if (x >= 0 && y <= 0 && (x * x + y * y <= (r / 2) ** 2)) {
-            return true;
-        }
-
-        return false;
+        return x >= 0 && y <= 0 && (x * x + y * y <= (r / 2) ** 2);
     }
 
     function addResultToTable(x, y, r, isHit) {
