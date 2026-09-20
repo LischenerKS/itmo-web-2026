@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isHit = checkHit(x, y, r);
 
         const resultText = isHit ? 'Hit' : 'Miss';
-        const dateTimeString = new Date().toLocaleString();
+        const dateTimeString = new Date().toLocaleString('ru-RU');
 
         addResultToTable(x, y, r, resultText, dateTimeString);
         saveToLocalStorage(x, y, r, resultText, dateTimeString);
