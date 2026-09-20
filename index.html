@@ -12,47 +12,53 @@
         <h1> Lischener Kirill P3214 Variant 501946</h1>
     </header>
 
-    <canvas id="graph" width="300" height="300" style="border: 1px solid black;"></canvas>
 
-    <form id="point-form">
-        <div>
-            <label for="x-input">X [-5;5]:</label>
-            <input type="text" id="x-input" name="x" pattern="-?([0-4](\.\d+)?|5)" required>
+    <main class="main-container">
+        <div class="workspace">
+            <canvas id="graph" width="300" height="300" style="border: 1px solid black;"></canvas>
+
+            <form id="point-form">
+                <div>
+                    <label for="x-input">X [-5;5]:</label>
+                    <input type="text" id="x-input" name="x" pattern="-?([0-4](\.\d+)?|5)" required>
+                </div>
+
+                <div>
+                    <label for="y-input">Y [-5;5]:</label>
+                    <input type="text" id="y-input" name="y" pattern="-?([0-4](\.\d+)?|5)" required>
+                </div>
+
+                <div>
+                    <label>R:</label>
+                    <div>
+                        <input type="radio" id="r1" name="r" value="1" required>
+                        <label for="r1">1</label>
+                        <br>
+
+                        <input type="radio" id="r2" name="r" value="2">
+                        <label for="r2">2</label>
+                        <br>
+
+                        <input type="radio" id="r3" name="r" value="3">
+                        <label for="r3">3</label>
+                        <br>
+
+                        <input type="radio" id="r4" name="r" value="4">
+                        <label for="r4">4</label>
+                        <br>
+
+                        <input type="radio" id="r5" name="r" value="5">
+                        <label for="r5">5</label>
+                    </div>
+                </div>
+
+                <button type="submit">Check</button>
+            </form>
+
         </div>
 
-        <div>
-            <label for="y-input">Y [-5;5]:</label>
-            <input type="text" id="y-input" name="y" pattern="-?([0-4](\.\d+)?|5)" required>
-        </div>
 
-        <div>
-            <label>R:</label>
-            <div>
-                <input type="radio" id="r1" name="r" value="1" required>
-                <label for="r1">1</label>
-                <br>
-
-                <input type="radio" id="r2" name="r" value="2">
-                <label for="r2">2</label>
-                <br>
-
-                <input type="radio" id="r3" name="r" value="3">
-                <label for="r3">3</label>
-                <br>
-
-                <input type="radio" id="r4" name="r" value="4">
-                <label for="r4">4</label>
-                <br>
-
-                <input type="radio" id="r5" name="r" value="5">
-                <label for="r5">5</label>
-            </div>
-        </div>
-
-        <button type="submit">Check</button>
-    </form>
-
-    <table id="results-table">
+        <table id="results-table">
         <thead>
         <tr>
             <th>X</th>
@@ -65,5 +71,7 @@
         <tbody id="results-body">
         </tbody>
     </table>
+
+    </main>
 </body>
 </html>
