@@ -3,6 +3,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const context = canvas.getContext('2d');
     const form = document.getElementById('point-form');
 
+    const size = 300;
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+
+    context.scale(dpr, dpr);
+
     drawArea("R");
     loadTableData();
 
@@ -51,10 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function drawArea(rLabel) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, size, size);
 
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
+        const centerX = size / 2;
+        const centerY = size / 2;
         const rMultiplier = 100;
 
         context.fillStyle = '#3399FF';
@@ -81,24 +92,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //x
         context.moveTo(0, centerY);
-        context.lineTo(canvas.width, centerY);
+        context.lineTo(size, centerY);
 
-        context.moveTo(canvas.width - 10, centerY - 5);
-        context.lineTo(canvas.width, centerY);
-        context.lineTo(canvas.width - 10, centerY + 5);
+        context.moveTo(size - 10, centerY - 5);
+        context.lineTo(size, centerY);
+        context.lineTo(size - 10, centerY + 5);
 
         //y
         context.moveTo(centerX, 0);
-        context.lineTo(centerX, canvas.height);
+        context.lineTo(centerX, size);
 
         context.moveTo(centerX - 5, 10);
         context.lineTo(centerX, 0);
         context.lineTo(centerX + 5, 10);
 
         context.fillStyle = 'black';
-        context.font = "12px Arial";
+        context.font = "13px sans-serif";
 
-        context.fillText("x", canvas.width - 15, centerY - 15);
+        context.fillText("x", size - 15, centerY - 15);
         context.fillText("y", centerX + 15, 15);
 
         context.stroke();
