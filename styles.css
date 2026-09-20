@@ -64,6 +64,7 @@ body {
     text-align: center;
     padding: 15px 0;
     margin-bottom: 30px;
+    font-family: cursive
 }
 
 .page-header h1 {
@@ -111,4 +112,9 @@ body {
     border: 1px solid #ddd;
     border-radius: 8px;
     flex-shrink: 0;
+}
+
+#point-form > div > label::after {
+    content: " *";
+    color: #ff4444;
 }
