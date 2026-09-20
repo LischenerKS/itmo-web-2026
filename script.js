@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const tbody = document.getElementById('results-body');
         const row = document.createElement('tr');
 
-        const displayTime = new Date(dateTimeString).toLocaleString();
+        const displayTime = new Date(dateTimeString).toLocaleString('ru-RU');
 
         row.innerHTML = `
             <td>${x}</td>
