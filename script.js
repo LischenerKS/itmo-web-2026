@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('point-form');
 
     drawArea("R");
+    loadTableData();
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
@@ -14,13 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         drawArea(r);
         const isHit = checkHit(x, y, r);
-        addResultToTable(x, y, r, isHit);
 
+        const resultText = isHit ? 'Hit' : 'Miss';
+        const dateTimeString = new Date().toLocaleString();
+
+        addResultToTable(x, y, r, resultText, dateTimeString);
+
+        saveToLocalStorage(x, y, r, resultText, dateTimeString);
     });
-
-
-
-
 
     function drawArea(rLabel) {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -28,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         const rMultiplier = 100;
-
 
         context.fillStyle = '#3399FF';
 
@@ -47,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         context.moveTo(centerX, centerY);
         context.arc(centerX, centerY, rMultiplier / 2, 0, Math.PI / 2);
         context.fill();
-
 
         //axes
         context.strokeStyle = 'black';
@@ -77,11 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         context.stroke();
 
-
-
-
         const tick = 5;
-
         const isText = (rLabel === "R");
 
         const points = [
@@ -90,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
             { multi: -0.5, label: isText ? "-R/2" : -(rLabel / 2) },
             { multi: -1, label: isText ? "-R" : -rLabel }
         ];
-
 
         points.forEach(p => {
             const offset = p.multi * rMultiplier;
@@ -116,35 +111,46 @@ document.addEventListener('DOMContentLoaded', () => {
         if (x >= 0 && y >= 0 && y <= -x + (r / 2)) {
             return true;
         }
-
         //rectangle
         if (x <= 0 && y <= 0 && x >= -r && y >= -r) {
             return true;
         }
-
         //circle sector
         return x >= 0 && y <= 0 && (x * x + y * y <= (r / 2) ** 2);
     }
 
-    function addResultToTable(x, y, r, isHit) {
+
+
+    function addResultToTable(x, y, r, resultText, dateTimeString) {
         const tbody = document.getElementById('results-body');
         const row = document.createElement('tr');
-
-        const timeString = new Date().toLocaleString();
-
-        const resultText = isHit ? 'Hit' : 'Miss';
 
         row.innerHTML = `
             <td>${x}</td>
             <td>${y}</td>
             <td>${r}</td>
             <td>${resultText}</td>
-            <td>${timeString}</td>
+            <td>${dateTimeString}</td>
         `;
 
         tbody.insertBefore(row, tbody.firstChild);
     }
 
 
+    function saveToLocalStorage(x, y, r, resultText, dateTimeString) {
+        const results = JSON.parse(localStorage.getItem('pointsData')) || [];
 
+        results.push({ x, y, r, resultText, dateTimeString });
+
+        localStorage.setItem('pointsData', JSON.stringify(results));
+    }
+
+
+    function loadTableData() {
+        let results = JSON.parse(localStorage.getItem('pointsData')) || [];
+
+        results.forEach(item => {
+            addResultToTable(item.x, item.y, item.r, item.resultText, item.dateTimeString);
+        });
+    }
 });
