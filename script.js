@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isHit = checkHit(x, y, r);
 
         const resultText = isHit ? 'Hit' : 'Miss';
-        const dateTimeString = new Date().toLocaleString('ru-RU');
+        const dateTimeString = new Date().toISOString();
 
         addResultToTable(x, y, r, resultText, dateTimeString);
         saveToLocalStorage(x, y, r, resultText, dateTimeString);
@@ -149,12 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const tbody = document.getElementById('results-body');
         const row = document.createElement('tr');
 
+        const displayTime = new Date(dateTimeString).toLocaleString();
+
         row.innerHTML = `
             <td>${x}</td>
             <td>${y}</td>
             <td>${r}</td>
             <td>${resultText}</td>
-            <td>${dateTimeString}</td>
+            <td>${displayTime}</td>
         `;
 
         tbody.insertBefore(row, tbody.firstChild);
