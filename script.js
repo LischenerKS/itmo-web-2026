@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const r = parseFloat(document.querySelector('input[name="r"]:checked').value);
 
         drawArea(r);
+        const isHit = checkHit(x, y, r);
+        addResultToTable(x, y, r, isHit);
+
     });
 
 
@@ -108,8 +111,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function checkHit(x, y, r) {
+        //triangle
+        if (x >= 0 && y >= 0 && y <= -x + (r / 2)) {
+            return true;
+        }
 
+        //rectangle
+        if (x <= 0 && y <= 0 && x >= -r && y >= -r) {
+            return true;
+        }
 
+        //circle sector
+        if (x >= 0 && y <= 0 && (x * x + y * y <= (r / 2) ** 2)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function addResultToTable(x, y, r, isHit) {
+        const tbody = document.getElementById('results-body');
+        const row = document.createElement('tr');
+
+        const timeString = new Date().toLocaleString();
+
+        const resultText = isHit ? 'Hit' : 'Miss';
+
+        row.innerHTML = `
+            <td>${x}</td>
+            <td>${y}</td>
+            <td>${r}</td>
+            <td>${resultText}</td>
+            <td>${timeString}</td>
+        `;
+
+        tbody.insertBefore(row, tbody.firstChild);
+    }
 
 
 
