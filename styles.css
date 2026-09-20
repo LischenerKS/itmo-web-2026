@@ -70,3 +70,19 @@ body {
     margin: 0;
     font-size: 22px;
 }
+
+#point-form button {
+    background-color: #3399FF;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#point-form button:hover {
+    background-color: #1f72d8;
+}
