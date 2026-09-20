@@ -9,9 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
 
-        const x = parseFloat(document.getElementById('x-input').value);
-        const y = parseFloat(document.getElementById('y-input').value);
-        const r = parseFloat(document.querySelector('input[name="r"]:checked').value);
+        const xStr = document.getElementById('x-input').value;
+        const yStr = document.getElementById('y-input').value;
+        const rRadio = document.querySelector('input[name="r"]:checked');
+
+        if (!validateInput(xStr, yStr, rRadio)) {
+            return;
+        }
+
+        const x = parseFloat(xStr);
+        const y = parseFloat(yStr);
+        const r = parseFloat(rRadio.value);
 
         drawArea(r);
         const isHit = checkHit(x, y, r);
@@ -20,9 +28,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const dateTimeString = new Date().toLocaleString();
 
         addResultToTable(x, y, r, resultText, dateTimeString);
-
         saveToLocalStorage(x, y, r, resultText, dateTimeString);
     });
+
+    function validateInput(xStr, yStr, rRadio) {
+        if (!rRadio) {
+            alert("please select a value for R");
+            return false;
+        }
+
+        const regex = /^-?([0-4](\.\d+)?|5)$/;
+        if (!regex.test(xStr)) {
+            alert("invalid X value, please enter a number from -5 to 5");
+            return false;
+        }
+        if (!regex.test(yStr)) {
+            alert("invalid X value, please enter a number from -5 to 5");
+            return false;
+        }
+
+        return true;
+    }
 
     function drawArea(rLabel) {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -118,8 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
         //circle sector
         return x >= 0 && y <= 0 && (x * x + y * y <= (r / 2) ** 2);
     }
-
-
 
     function addResultToTable(x, y, r, resultText, dateTimeString) {
         const tbody = document.getElementById('results-body');
