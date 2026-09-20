@@ -57,3 +57,16 @@ body {
     background-color: #e9ecef;
     font-weight: bold;
 }
+
+.page-header {
+    background-color: #3399FF;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 22px;
+}
