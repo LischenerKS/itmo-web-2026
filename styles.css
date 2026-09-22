@@ -40,10 +40,17 @@ body {
 }
 
 #results-table {
+    display: block;
     border-collapse: collapse;
     width: 100%;
-    max-width: 600px;
+    max-width: 428px;
+    height: 220px;
     background-color: white;
+    overflow: scroll;
+}
+
+#results-body {
+    white-space: nowrap;
 }
 
 #results-table th,
@@ -56,6 +63,8 @@ body {
 #results-table th {
     background-color: #e9ecef;
     font-weight: bold;
+    position: sticky;
+    top: 0;
 }
 
 .page-header {
