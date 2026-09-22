@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     drawArea("R");
     loadTableData();
+    addSavedPoints();
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
@@ -32,13 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const y = parseFloat(yStr);
         const r = parseFloat(rRadio.value);
 
+
+
         drawArea(r);
+        addSavedPoints(r);
+
         const isHit = checkHit(x, y, r);
 
         const resultText = isHit ? 'Hit' : 'Miss';
         const dateTimeString = new Date().toISOString();
 
         addResultToTable(x, y, r, resultText, dateTimeString);
+        addPoint(x, y, r, isHit);
         saveToLocalStorage(x, y, r, resultText, dateTimeString);
     });
 
@@ -63,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function drawArea(rLabel) {
         context.clearRect(0, 0, size, size);
+        addSavedPoints();
 
         const centerX = size / 2;
         const centerY = size / 2;
@@ -173,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.insertBefore(row, tbody.firstChild);
     }
 
-
     function saveToLocalStorage(x, y, r, resultText, dateTimeString) {
         const results = JSON.parse(localStorage.getItem('pointsData')) || [];
 
@@ -182,12 +188,32 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('pointsData', JSON.stringify(results));
     }
 
-
     function loadTableData() {
         let results = JSON.parse(localStorage.getItem('pointsData')) || [];
 
         results.forEach(item => {
             addResultToTable(item.x, item.y, item.r, item.resultText, item.dateTimeString);
         });
+    }
+
+    function addSavedPoints(r) {
+        let results = JSON.parse(localStorage.getItem('pointsData')) || [];
+
+        results.forEach(item => {
+            addPoint(item.x, item.y, r, checkHit(item.x, item.y, r));
+        });
+    }
+
+    function addPoint(x, y, r, isHit) {
+        context.beginPath();
+        context.fillStyle = isHit ? '#3ada17' : '#c60c18';
+        const centerX = size / 2;
+        const centerY = size / 2;
+
+        const rMultiplier = 100;
+        const rPixels = rMultiplier / r;
+
+        context.arc(centerX + rPixels*x, centerY - rPixels*y, 5, 0, Math.PI*2);
+        context.fill();
     }
 });
