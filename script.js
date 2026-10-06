@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('pointsData');
         const tbody = document.getElementById('results-body');
         tbody.replaceChildren();
+        drawArea("R");
     }
 
     function validateInput(xStr, yStr, rRadio) {
