@@ -44,9 +44,17 @@ body {
     border-collapse: collapse;
     width: 100%;
     max-width: 428px;
+    min-width: 428px;
     height: 220px;
     background-color: white;
-    overflow: scroll;
+    overflow-y: auto;
+    margin: 0 auto;
+}
+
+#results-table thead,
+#results-table tbody,
+#results-table tr {
+    width: 100%;
 }
 
 #results-body {
@@ -60,11 +68,17 @@ body {
     text-align: center;
 }
 
+.results {
+    width: 100%;
+    margin: 20px auto;
+}
+
 #results-table th {
     background-color: #e9ecef;
     font-weight: bold;
     position: sticky;
     top: 0;
+    width: 100%;
 }
 
 .page-header {
