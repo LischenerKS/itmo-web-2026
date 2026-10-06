@@ -81,7 +81,7 @@ body {
     font-size: 22px;
 }
 
-#point-form button {
+#point-form button, #clear-history {
     background-color: #3399FF;
     color: white;
     border: none;
@@ -93,7 +93,7 @@ body {
     transition: background-color 0.2s;
 }
 
-#point-form button:hover {
+#point-form button:hover, #clear-history:hover {
     background-color: #1f72d8;
 }
 

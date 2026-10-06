@@ -1,3 +1,5 @@
+'use strict';
+
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('graph');
     const context = canvas.getContext('2d');
@@ -8,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     canvas.width = size * dpr;
     canvas.height = size * dpr;
-
     canvas.style.width = size + 'px';
     canvas.style.height = size + 'px';
 
@@ -47,6 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
         addPoint(x, y, r, isHit);
         saveToLocalStorage(x, y, r, resultText, dateTimeString);
     });
+
+    document.getElementById("clear-history").addEventListener("click", event => {
+        clearHistory();
+    });
+
+
+    function clearHistory() {
+        localStorage.removeItem('pointsData');
+        const tbody = document.getElementById('results-body');
+        tbody.replaceChildren();
+    }
 
     function validateInput(xStr, yStr, rRadio) {
         if (!rRadio) {
@@ -92,6 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
         context.moveTo(centerX, centerY);
         context.arc(centerX, centerY, rMultiplier / 2, 0, Math.PI / 2);
         context.fill();
+
+
+
 
         //axes
         context.strokeStyle = 'black';
