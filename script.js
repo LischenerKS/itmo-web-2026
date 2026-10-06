@@ -1,5 +1,7 @@
 'use strict';
 
+import Decimal from "./decimal.mjs";
+
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('graph');
     const context = canvas.getContext('2d');
@@ -30,9 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const x = parseFloat(xStr);
-        const y = parseFloat(yStr);
-        const r = parseFloat(rRadio.value);
+        const x = new Decimal(xStr);
+        const y = new Decimal(yStr);
+        const r = new Decimal(rRadio.value);
 
 
 
