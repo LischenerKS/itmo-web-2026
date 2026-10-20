@@ -2,6 +2,8 @@
 
 import Decimal from "./decimal.mjs";
 
+Decimal.set({ precision: 50 });
+
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('graph');
     const context = canvas.getContext('2d');
@@ -169,16 +171,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkHit(x, y, r) {
+        if (r === undefined || r === null || r === "R") {
+            return false;
+        }
+
+        x = new Decimal(x);
+        y = new Decimal(y);
+        r = new Decimal(r);
+
         //triangle
-        if (x >= 0 && y >= 0 && y <= -x + (r / 2)) {
+        if (x.gte(0) && y.gte(0) && y.lte(r.div(2).minus(x))) {
             return true;
         }
         //rectangle
-        if (x <= 0 && y <= 0 && x >= -r && y >= -r) {
+        if (x.lte(0) && y.lte(0) && x.gte(r.neg()) && y.gte(r.neg())) {
             return true;
         }
         //circle sector
-        return x >= 0 && y <= 0 && (x * x + y * y <= (r / 2) ** 2);
+        return x.gte(0) && y.lte(0) && (x.times(x).plus(y.times(y)).lte(r.div(2).pow(2)));
     }
 
     function addResultToTable(x, y, r, resultText, dateTimeString) {
