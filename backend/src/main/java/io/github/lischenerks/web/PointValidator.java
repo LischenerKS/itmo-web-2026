@@ -16,18 +16,18 @@ public final class PointValidator {
 
     public static List<Point> validate(List<String> xValues, String yValue, String rValue) {
         if (xValues == null || xValues.isEmpty()) {
-            throw new IllegalArgumentException("Выберите хотя бы одно значение X.");
+            throw new IllegalArgumentException("Выберите хотя бы одно значение X");
         }
 
         BigDecimal y = decimal(yValue, "Y");
         if (y.abs().compareTo(Y_BOUND) >= 0) {
-            throw new IllegalArgumentException("Y должен быть строго между -3 и 3.");
+            throw new IllegalArgumentException("Y должен быть строго между -3 и 3");
         }
 
         BigDecimal r = decimal(rValue, "R");
         if (r.compareTo(BigDecimal.ONE) < 0 || r.compareTo(MAX_R) > 0
                 || r.remainder(BigDecimal.ONE).signum() != 0) {
-            throw new IllegalArgumentException("R должен быть одним из значений: 1, 2, 3, 4, 5.");
+            throw new IllegalArgumentException("R должен быть одним из значений: 1, 2, 3, 4, 5");
         }
 
         List<Point> points = new ArrayList<>();
@@ -35,7 +35,7 @@ public final class PointValidator {
             BigDecimal x = decimal(xValue, "X");
             if (x.compareTo(MIN_X) < 0 || x.compareTo(MAX_X) > 0
                     || x.multiply(TWO).remainder(BigDecimal.ONE).signum() != 0) {
-                throw new IllegalArgumentException("X должен быть от -2 до 2 с шагом 0.5.");
+                throw new IllegalArgumentException("X должен быть от -2 до 2 с шагом 0.5");
             }
             points.add(new Point(x, y, r));
         }
@@ -44,7 +44,7 @@ public final class PointValidator {
 
     private static BigDecimal decimal(String value, String name) {
         if (value == null || !value.matches("-?[0-9]+(?:\\.[0-9]+)?")) {
-            throw new IllegalArgumentException(name + ": введите десятичное число с точкой.");
+            throw new IllegalArgumentException(name + ": введите десятичное число с точкой");
         }
         return new BigDecimal(value);
     }

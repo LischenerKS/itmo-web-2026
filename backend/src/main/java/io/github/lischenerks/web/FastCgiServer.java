@@ -12,7 +12,7 @@ public final class FastCgiServer {
 
     public static void main(String[] args) {
         if (System.getProperty("FCGI_PORT") == null) {
-            throw new IllegalArgumentException("Укажите порт FastCGI: -DFCGI_PORT=9000.");
+            throw new IllegalArgumentException("Укажите порт FastCGI: -DFCGI_PORT=9000");
         }
 
         FCGIInterface fastCgi = new FCGIInterface();
@@ -23,24 +23,24 @@ public final class FastCgiServer {
             } catch (IllegalArgumentException e) {
                 respond("400 Bad Request", JsonResponse.error(e.getMessage(), started));
             } catch (IOException e) {
-                respond("400 Bad Request", JsonResponse.error("Не удалось прочитать тело запроса.", started));
+                respond("400 Bad Request", JsonResponse.error("Не удалось прочитать тело запроса", started));
             } catch (RuntimeException e) {
                 e.printStackTrace(System.err);
-                respond("500 Internal Server Error", JsonResponse.error("Ошибка обработки запроса.", started));
+                respond("500 Internal Server Error", JsonResponse.error("Ошибка обработки запроса", started));
             }
         }
     }
 
     private static void handleRequest(Properties params, long started) throws IOException {
         if (!"POST".equals(params.getProperty("REQUEST_METHOD"))) {
-            respond("405 Method Not Allowed", JsonResponse.error("Используйте POST-запрос.", started));
+            respond("405 Method Not Allowed", JsonResponse.error("Используйте POST-запрос", started));
             return;
         }
 
         String contentType = params.getProperty("CONTENT_TYPE", "").split(";", 2)[0].trim();
         if (!"application/x-www-form-urlencoded".equalsIgnoreCase(contentType)) {
             respond("415 Unsupported Media Type",
-                    JsonResponse.error("Ожидается application/x-www-form-urlencoded.", started));
+                    JsonResponse.error("Ожидается application/x-www-form-urlencoded", started));
             return;
         }
 

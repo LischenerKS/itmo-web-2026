@@ -151,6 +151,11 @@ button:focus,
     background-color: #1f72d8;
 }
 
+#point-form button:disabled, #clear-history:disabled {
+    background-color: #767676;
+    cursor: wait;
+}
+
 .checkboxes {
     display: flex;
     flex-wrap: wrap;

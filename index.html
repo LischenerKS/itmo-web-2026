@@ -17,7 +17,7 @@
             <canvas id="graph" width="300" height="300" role="img"
                     aria-label="Координатная плоскость и область проверки">
                 Область состоит из треугольника во второй четверти, четверти круга
-                в третьей и квадрата в четвёртой. Границы входят в область.
+                в третьей и квадрата в четвёртой, границы входят в область
             </canvas>
 
             <form id="point-form" action="/fcgi-bin/check" method="post">
@@ -41,7 +41,7 @@
                     <input type="text" id="y-input" name="y" inputmode="decimal"
                            pattern="-?0*[0-2](\.[0-9]+)?" required
                            aria-describedby="y-hint">
-                    <small id="y-hint">Границы не входят в диапазон. Дробная часть — через точку.</small>
+                    <small id="y-hint">Без границ, дробная часть через точку</small>
                 </div>
 
                 <div>
