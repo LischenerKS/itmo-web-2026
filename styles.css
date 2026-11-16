@@ -83,6 +83,7 @@ button:focus,
 
 #results-table {
     border-collapse: collapse;
+    table-layout: fixed;
     width: 100%;
     min-width: 720px;
     background-color: white;
@@ -96,7 +97,8 @@ button:focus,
 }
 
 #results-body {
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 #results-table th,
@@ -104,6 +106,7 @@ button:focus,
     border: 1px solid #ccc;
     padding: 12px;
     text-align: center;
+    vertical-align: top;
 }
 
 .results {
