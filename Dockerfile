@@ -1,6 +1,22 @@
-FROM nginx
-LABEL authors="kir"
+FROM eclipse-temurin:21-jdk-noble AS backend-build
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /app
+COPY gradlew settings.gradle ./
+COPY gradle ./gradle
+COPY backend/build.gradle ./backend/build.gradle
+COPY lib/fastcgi-lib.jar ./lib/fastcgi-lib.jar
+COPY backend/src ./backend/src
+RUN ./gradlew --no-daemon :backend:installDist
 
-COPY . /usr/share/nginx/html
+FROM eclipse-temurin:21-jre-noble AS backend
+
+WORKDIR /app
+COPY --from=backend-build /app/backend/build/install/backend/ ./
+USER 1000:1000
+EXPOSE 9000
+ENTRYPOINT ["/app/bin/backend"]
+
+FROM httpd:2.4 AS web
+
+COPY httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY index.html script.js styles.css /usr/local/apache2/htdocs/

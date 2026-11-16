@@ -1,6 +1,6 @@
 # API
 
-POST с `Content-Type: application/x-www-form-urlencoded`
+POST `/fcgi-bin/check` с `Content-Type: application/x-www-form-urlencoded`
 
 ```text
 x=-1&x=0&x=0.5&y=1&r=2
