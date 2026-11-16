@@ -19,4 +19,4 @@ ENTRYPOINT ["/app/bin/backend"]
 FROM httpd:2.4 AS web
 
 COPY httpd.conf /usr/local/apache2/conf/httpd.conf
-COPY index.html script.js styles.css /usr/local/apache2/htdocs/
+COPY frontend/index.html frontend/script.js frontend/styles.css /usr/local/apache2/htdocs/
