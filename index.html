@@ -3,82 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лабораторная работа №1</title>
+    <title>Лабораторная работа №2</title>
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="script.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header class="page-header">
-        <h1> Lischener Kirill P3214 Variant 501946</h1>
+        <h1>Lischener Kirill P3214 Variant 501946</h1>
     </header>
-
 
     <main class="main-container">
         <div class="workspace">
-            <canvas id="graph" width="300" height="300"></canvas>
+            <canvas id="graph" width="300" height="300" role="img"
+                    aria-label="Координатная плоскость и область проверки">
+                Область состоит из треугольника во второй четверти, четверти круга
+                в третьей и квадрата в четвёртой. Границы входят в область.
+            </canvas>
 
-            <form id="point-form">
-                <div>
-                    <label for="x-input">X [-5;5]:</label>
-                    <input type="text" id="x-input" name="x" pattern="-?([0-4](\.\d+)?|5)" required>
-                </div>
-
-                <div>
-                    <label for="y-input">Y [-5;5]:</label>
-                    <input type="text" id="y-input" name="y" pattern="-?([0-4](\.\d+)?|5)" required>
-                </div>
-
-                <div>
-                    <label>R:</label>
-                    <div class="radio-buttons">
-                        <div class="radio-option">
-                            <input type="radio" id="r1" name="r" value="1" required>
-                            <label for="r1">1</label>
-                        </div>
-
-                        <div class="radio-option">
-                            <input type="radio" id="r2" name="r" value="2">
-                            <label for="r2">2</label>
-                        </div>
-
-                        <div class="radio-option">
-                            <input type="radio" id="r3" name="r" value="3">
-                            <label for="r3">3</label>
-                        </div>
-
-                        <div class="radio-option">
-                            <input type="radio" id="r4" name="r" value="4">
-                            <label for="r4">4</label>
-                        </div>
-
-                        <div class="radio-option">
-                            <input type="radio" id="r5" name="r" value="5">
-                            <label for="r5">5</label>
-                        </div>
+            <form id="point-form" action="/fcgi-bin/check" method="post">
+                <fieldset>
+                    <legend>X:</legend>
+                    <div class="checkboxes">
+                        <label class="checkbox-option"><input type="checkbox" name="x" value="-2" required>−2</label>
+                        <label class="checkbox-option"><input type="checkbox" name="x" value="-1.5">−1.5</label>
+                        <label class="checkbox-option"><input type="checkbox" name="x" value="-1">−1</label>
+                        <label class="checkbox-option"><input type="checkbox" name="x" value="-0.5">−0.5</label>
+                        <label class="checkbox-option"><input type="checkbox" name="x" value="0">0</label>
+                        <label class="checkbox-option"><input type="checkbox" name="x" value="0.5">0.5</label>
+                        <label class="checkbox-option"><input type="checkbox" name="x" value="1">1</label>
+                        <label class="checkbox-option"><input type="checkbox" name="x" value="1.5">1.5</label>
+                        <label class="checkbox-option"><input type="checkbox" name="x" value="2">2</label>
                     </div>
+                </fieldset>
+
+                <div>
+                    <label for="y-input">Y (−3; 3):</label>
+                    <input type="text" id="y-input" name="y" inputmode="decimal"
+                           pattern="-?0*[0-2](\.[0-9]+)?" required
+                           aria-describedby="y-hint">
+                    <small id="y-hint">Границы не входят в диапазон. Дробная часть — через точку.</small>
                 </div>
 
+                <div>
+                    <label for="r-input">R:</label>
+                    <select id="r-input" name="r" required>
+                        <option value="" disabled selected>Выберите R</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <p id="form-error" role="alert" hidden></p>
                 <button type="submit">Check</button>
             </form>
-
         </div>
 
-    <button type="button" id="clear-history">Clear history</button>
-    <section class="results">
-        <table id="results-table">
-            <thead>
-            <tr>
-                <th>X</th>
-                <th>Y</th>
-                <th>R</th>
-                <th>Result</th>
-                <th>Time</th>
-            </tr>
-            </thead>
-            <tbody id="results-body">
-            </tbody>
-        </table>
-    </section>
+        <button type="button" id="clear-history">Clear history</button>
+        <section class="results" aria-label="Результаты проверки точек" tabindex="0">
+            <table id="results-table">
+                <thead>
+                <tr>
+                    <th scope="col">X</th>
+                    <th scope="col">Y</th>
+                    <th scope="col">R</th>
+                    <th scope="col">Result</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Execution time, ms</th>
+                </tr>
+                </thead>
+                <tbody id="results-body"></tbody>
+            </table>
+        </section>
     </main>
 </body>
 </html>

@@ -1,247 +1,173 @@
 'use strict';
 
-import Decimal from "./decimal.mjs";
-
-Decimal.set({ precision: 50 });
-
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('graph');
     const context = canvas.getContext('2d');
     const form = document.getElementById('point-form');
-
+    const xInputs = [...form.querySelectorAll('input[name="x"]')];
+    const yInput = document.getElementById('y-input');
+    const rInput = document.getElementById('r-input');
+    const error = document.getElementById('form-error');
+    const tbody = document.getElementById('results-body');
+    const xValues = ['-2', '-1.5', '-1', '-0.5', '0', '0.5', '1', '1.5', '2'];
+    const rValues = ['1', '2', '3', '4', '5'];
+    const yPattern = new RegExp(`^(?:${yInput.pattern})$`);
+    const storageKey = 'pointsDataLab2';
+    const results = loadHistory();
     const size = 300;
+    const radius = 100;
+    const center = size / 2;
     const dpr = window.devicePixelRatio || 1;
 
     canvas.width = size * dpr;
     canvas.height = size * dpr;
     canvas.style.width = size + 'px';
     canvas.style.height = size + 'px';
-
     context.scale(dpr, dpr);
 
-    drawArea("R");
-    loadTableData();
-    addSavedPoints();
+    results.forEach(addResultToTable);
+    validateInput();
+    drawGraph();
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
+    form.addEventListener('input', () => {
+        validateInput();
+        error.hidden = true;
+    });
 
-        const xStr = document.getElementById('x-input').value;
-        const yStr = document.getElementById('y-input').value;
-        const rRadio = document.querySelector('input[name="r"]:checked');
+    rInput.addEventListener('change', drawGraph);
 
-        if (!validateInput(xStr, yStr, rRadio)) {
+    form.addEventListener('invalid', event => {
+        error.textContent = event.target.validationMessage;
+        error.hidden = false;
+    }, true);
+
+    form.addEventListener('submit', event => {
+        validateInput();
+        if (!form.reportValidity()) {
+            event.preventDefault();
+        }
+    });
+
+    document.getElementById('clear-history').addEventListener('click', () => {
+        try {
+            localStorage.removeItem(storageKey);
+        } catch {
+            error.textContent = 'Не удалось очистить историю в браузере.';
+            error.hidden = false;
             return;
         }
-
-        const x = new Decimal(xStr);
-        const y = new Decimal(yStr);
-        const r = new Decimal(rRadio.value);
-
-
-
-        drawArea(r);
-        addSavedPoints(r);
-
-        const isHit = checkHit(x, y, r);
-
-        const resultText = isHit ? 'Hit' : 'Miss';
-        const dateTimeString = new Date().toISOString();
-
-        addResultToTable(x, y, r, resultText, dateTimeString);
-        addPoint(x, y, r, isHit);
-        saveToLocalStorage(x, y, r, resultText, dateTimeString);
-    });
-
-    document.getElementById("clear-history").addEventListener("click", event => {
-        clearHistory();
-    });
-
-
-    function clearHistory() {
-        localStorage.removeItem('pointsData');
-        const tbody = document.getElementById('results-body');
+        results.length = 0;
         tbody.replaceChildren();
-        drawArea("R");
+        drawGraph();
+    });
+
+    function validateInput() {
+        const selected = xInputs.filter(input => input.checked);
+        xInputs[0].required = selected.length === 0;
+        xInputs[0].setCustomValidity(selected.length === 0
+            ? 'Выберите хотя бы одно значение X.'
+            : selected.every(input => xValues.includes(input.value))
+                ? '' : 'Выберите X из предложенных значений.');
+        yInput.setCustomValidity(yPattern.test(yInput.value)
+            ? '' : 'Введите число строго между -3 и 3. Дробная часть — через точку.');
+        rInput.setCustomValidity(rValues.includes(rInput.value) ? '' : 'Выберите R от 1 до 5.');
     }
 
-    function validateInput(xStr, yStr, rRadio) {
-        if (!rRadio) {
-            alert("please select a value for R");
-            return false;
+    function drawGraph() {
+        const r = Number(rInput.value);
+        const rLabel = rValues.includes(rInput.value) ? r : 'R';
+        drawArea(rLabel);
+        if (rLabel !== 'R') {
+            results.filter(item => Number(item.r) === r).forEach(item => addPoint(item, r));
         }
-
-        const regex = /^-?([0-4](\.\d+)?|5)$/;
-        if (!regex.test(xStr)) {
-            alert("invalid X value, please enter a number from -5 to 5");
-            return false;
-        }
-        if (!regex.test(yStr)) {
-            alert("invalid X value, please enter a number from -5 to 5");
-            return false;
-        }
-
-        return true;
     }
 
     function drawArea(rLabel) {
         context.clearRect(0, 0, size, size);
-        addSavedPoints();
-
-        const centerX = size / 2;
-        const centerY = size / 2;
-        const rMultiplier = 100;
-
         context.fillStyle = '#3399FF';
+        context.fillRect(center, center, radius, radius);
 
-        //rectangle
-        context.fillRect(centerX - rMultiplier, centerY, rMultiplier, rMultiplier);
-
-        //triangle
         context.beginPath();
-        context.moveTo(centerX, centerY);
-        context.lineTo(centerX + rMultiplier / 2, centerY);
-        context.lineTo(centerX, centerY - rMultiplier / 2);
+        context.moveTo(center, center);
+        context.lineTo(center - radius, center);
+        context.lineTo(center, center - radius);
+        context.closePath();
         context.fill();
 
-        //circle sector
         context.beginPath();
-        context.moveTo(centerX, centerY);
-        context.arc(centerX, centerY, rMultiplier / 2, 0, Math.PI / 2);
+        context.moveTo(center, center);
+        context.arc(center, center, radius, Math.PI / 2, Math.PI);
+        context.closePath();
         context.fill();
 
-
-
-
-        //axes
         context.strokeStyle = 'black';
         context.beginPath();
-
-        //x
-        context.moveTo(0, centerY);
-        context.lineTo(size, centerY);
-
-        context.moveTo(size - 10, centerY - 5);
-        context.lineTo(size, centerY);
-        context.lineTo(size - 10, centerY + 5);
-
-        //y
-        context.moveTo(centerX, 0);
-        context.lineTo(centerX, size);
-
-        context.moveTo(centerX - 5, 10);
-        context.lineTo(centerX, 0);
-        context.lineTo(centerX + 5, 10);
-
-        context.fillStyle = 'black';
-        context.font = "13px sans-serif";
-
-        context.fillText("x", size - 15, centerY - 15);
-        context.fillText("y", centerX + 15, 15);
-
+        context.moveTo(0, center);
+        context.lineTo(size, center);
+        context.moveTo(size - 10, center - 5);
+        context.lineTo(size, center);
+        context.lineTo(size - 10, center + 5);
+        context.moveTo(center, size);
+        context.lineTo(center, 0);
+        context.moveTo(center - 5, 10);
+        context.lineTo(center, 0);
+        context.lineTo(center + 5, 10);
         context.stroke();
 
-        const tick = 5;
-        const isText = (rLabel === "R");
+        context.fillStyle = 'black';
+        context.font = '13px sans-serif';
+        context.fillText('x', size - 15, center - 15);
+        context.fillText('y', center + 15, 15);
 
-        const points = [
-            { multi: 1, label: isText ? "R" : rLabel },
-            { multi: 0.5, label: isText ? "R/2" : rLabel / 2 },
-            { multi: -0.5, label: isText ? "-R/2" : -(rLabel / 2) },
-            { multi: -1, label: isText ? "-R" : -rLabel }
-        ];
-
-        points.forEach(p => {
-            const offset = p.multi * rMultiplier;
-
-            //x
+        for (const multiplier of [1, 0.5, -0.5, -1]) {
+            const offset = multiplier * radius;
+            const label = rLabel === 'R'
+                ? `${multiplier < 0 ? '-' : ''}R${Math.abs(multiplier) === 0.5 ? '/2' : ''}`
+                : String(rLabel * multiplier);
             context.beginPath();
-            context.moveTo(centerX + offset, centerY - tick);
-            context.lineTo(centerX + offset, centerY + tick);
+            context.moveTo(center + offset, center - 5);
+            context.lineTo(center + offset, center + 5);
+            context.moveTo(center - 5, center - offset);
+            context.lineTo(center + 5, center - offset);
             context.stroke();
-            context.fillText(p.label, centerX + offset - 10, centerY - 15);
-
-            //y
-            context.beginPath();
-            context.moveTo(centerX - tick, centerY - offset);
-            context.lineTo(centerX + tick, centerY - offset);
-            context.stroke();
-            context.fillText(p.label, centerX + 10, centerY - offset + 4);
-        });
-    }
-
-    function checkHit(x, y, r) {
-        if (r === undefined || r === null || r === "R") {
-            return false;
+            context.fillText(label, center + offset - 10, center - 15);
+            context.fillText(label, center + 10, center - offset + 4);
         }
 
-        x = new Decimal(x);
-        y = new Decimal(y);
-        r = new Decimal(r);
+        canvas.setAttribute('aria-label', `Область при R = ${rLabel}: треугольник во второй четверти, `
+            + 'четверть круга в третьей и квадрат в четвёртой. Границы входят в область.');
+    }
 
-        //triangle
-        if (x.gte(0) && y.gte(0) && y.lte(r.div(2).minus(x))) {
-            return true;
+    function addPoint(item, r) {
+        const x = Number(item.x);
+        const y = Number(item.y);
+        if (!Number.isFinite(x) || !Number.isFinite(y)) {
+            return;
         }
-        //rectangle
-        if (x.lte(0) && y.lte(0) && x.gte(r.neg()) && y.gte(r.neg())) {
-            return true;
-        }
-        //circle sector
-        return x.gte(0) && y.lte(0) && (x.times(x).plus(y.times(y)).lte(r.div(2).pow(2)));
-    }
-
-    function addResultToTable(x, y, r, resultText, dateTimeString) {
-        const tbody = document.getElementById('results-body');
-        const row = document.createElement('tr');
-
-        const displayTime = new Date(dateTimeString).toLocaleString('ru-RU');
-
-        row.innerHTML = `
-            <td>${x}</td>
-            <td>${y}</td>
-            <td>${r}</td>
-            <td>${resultText}</td>
-            <td>${displayTime}</td>
-        `;
-
-        tbody.insertBefore(row, tbody.firstChild);
-    }
-
-    function saveToLocalStorage(x, y, r, resultText, dateTimeString) {
-        const results = JSON.parse(localStorage.getItem('pointsData')) || [];
-
-        results.push({ x, y, r, resultText, dateTimeString });
-
-        localStorage.setItem('pointsData', JSON.stringify(results));
-    }
-
-    function loadTableData() {
-        let results = JSON.parse(localStorage.getItem('pointsData')) || [];
-
-        results.forEach(item => {
-            addResultToTable(item.x, item.y, item.r, item.resultText, item.dateTimeString);
-        });
-    }
-
-    function addSavedPoints(r) {
-        let results = JSON.parse(localStorage.getItem('pointsData')) || [];
-
-        results.forEach(item => {
-            addPoint(item.x, item.y, r, checkHit(item.x, item.y, r));
-        });
-    }
-
-    function addPoint(x, y, r, isHit) {
         context.beginPath();
-        context.fillStyle = isHit ? '#3ada17' : '#c60c18';
-        const centerX = size / 2;
-        const centerY = size / 2;
-
-        const rMultiplier = 100;
-        const rPixels = rMultiplier / r;
-
-        context.arc(centerX + rPixels*x, centerY - rPixels*y, 5, 0, Math.PI*2);
+        context.fillStyle = item.hit ? '#3ada17' : '#c60c18';
+        context.arc(center + radius * x / r, center - radius * y / r, 5, 0, Math.PI * 2);
         context.fill();
+    }
+
+    function addResultToTable(item) {
+        const row = document.createElement('tr');
+        const values = [item.x, item.y, item.r, item.hit ? 'Hit' : 'Miss',
+            new Date(item.currentTime).toLocaleString('ru-RU'), item.executionTimeMs];
+        for (const value of values) {
+            const cell = document.createElement('td');
+            cell.textContent = value;
+            row.append(cell);
+        }
+        tbody.prepend(row);
+    }
+
+    function loadHistory() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            return Array.isArray(saved) ? saved : [];
+        } catch {
+            return [];
+        }
     }
 });
