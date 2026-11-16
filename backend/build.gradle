@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'application'
 }
 
 group = 'io.github.lischenerks'
@@ -12,6 +12,11 @@ java {
 
 dependencies {
     implementation files('../lib/fastcgi-lib.jar')
+}
+
+application {
+    mainClass = 'io.github.lischenerks.web.FastCgiServer'
+    applicationDefaultJvmArgs = ["-DFCGI_PORT=${providers.gradleProperty('fcgiPort').getOrElse('9000')}"]
 }
 
 tasks.withType(JavaCompile).configureEach {
