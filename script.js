@@ -139,27 +139,33 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawGraph() {
         const r = Number(rInput.value);
         const rLabel = rValues.includes(rInput.value) ? r : 'R';
-        drawArea(rLabel);
-        if (rLabel !== 'R') {
-            results.filter(item => Number(item.r) === r).forEach(item => addPoint(item, r));
+        if (rLabel === 'R') {
+            drawArea(rLabel);
+            return;
         }
+
+        const maxCoordinate = results.reduce((max, item) =>
+            Math.max(max, Math.abs(Number(item.x)), Math.abs(Number(item.y))), 0);
+        const pixelsPerUnit = Math.min(radius / r, (center - 15) / maxCoordinate);
+        drawArea(rLabel, r * pixelsPerUnit);
+        results.forEach(item => addPoint(item, pixelsPerUnit));
     }
 
-    function drawArea(rLabel) {
+    function drawArea(rLabel, areaRadius = radius) {
         context.clearRect(0, 0, size, size);
         context.fillStyle = '#3399FF';
-        context.fillRect(center, center, radius, radius);
+        context.fillRect(center, center, areaRadius, areaRadius);
 
         context.beginPath();
         context.moveTo(center, center);
-        context.lineTo(center - radius, center);
-        context.lineTo(center, center - radius);
+        context.lineTo(center - areaRadius, center);
+        context.lineTo(center, center - areaRadius);
         context.closePath();
         context.fill();
 
         context.beginPath();
         context.moveTo(center, center);
-        context.arc(center, center, radius, Math.PI / 2, Math.PI);
+        context.arc(center, center, areaRadius, Math.PI / 2, Math.PI);
         context.closePath();
         context.fill();
 
@@ -183,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         context.fillText('y', center + 15, 15);
 
         for (const multiplier of [1, 0.5, -0.5, -1]) {
-            const offset = multiplier * radius;
+            const offset = multiplier * areaRadius;
             const label = rLabel === 'R'
                 ? `${multiplier < 0 ? '-' : ''}R${Math.abs(multiplier) === 0.5 ? '/2' : ''}`
                 : String(rLabel * multiplier);
@@ -193,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
             context.moveTo(center - 5, center - offset);
             context.lineTo(center + 5, center - offset);
             context.stroke();
-            context.fillText(label, center + offset - 10, center - 15);
+            context.fillText(label, center + offset - 10, center - 7);
             context.fillText(label, center + 10, center - offset + 4);
         }
 
@@ -201,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             + 'четверть круга в третьей и квадрат в четвёртой, границы входят в область');
     }
 
-    function addPoint(item, r) {
+    function addPoint(item, pixelsPerUnit) {
         const x = Number(item.x);
         const y = Number(item.y);
         if (!Number.isFinite(x) || !Number.isFinite(y)) {
@@ -209,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         context.beginPath();
         context.fillStyle = item.hit ? '#3ada17' : '#c60c18';
-        context.arc(center + radius * x / r, center - radius * y / r, 5, 0, Math.PI * 2);
+        context.arc(center + pixelsPerUnit * x, center - pixelsPerUnit * y, 5, 0, Math.PI * 2);
         context.fill();
     }
 
