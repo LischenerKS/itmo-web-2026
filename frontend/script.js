@@ -144,11 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const maxCoordinate = results.reduce((max, item) =>
+        const visibleResults = results.filter(item => item.r === rInput.value);
+        const maxCoordinate = visibleResults.reduce((max, item) =>
             Math.max(max, Math.abs(Number(item.x)), Math.abs(Number(item.y))), 0);
         const pixelsPerUnit = Math.min(radius / r, (center - 15) / maxCoordinate);
         drawArea(rLabel, r * pixelsPerUnit);
-        results.forEach(item => addPoint(item, pixelsPerUnit));
+        visibleResults.forEach(item => addPoint(item, pixelsPerUnit));
     }
 
     function drawArea(rLabel, areaRadius = radius) {
