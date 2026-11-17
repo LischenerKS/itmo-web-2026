@@ -43,9 +43,9 @@ public final class PointValidator {
     }
 
     private static BigDecimal decimal(String value, String name) {
-        if (value == null || !value.matches("-?[0-9]+(?:\\.[0-9]+)?")) {
-            throw new IllegalArgumentException(name + ": введите десятичное число с точкой");
+        if (value == null || !value.matches("-?[0-9]+(?:[.,][0-9]+)?")) {
+            throw new IllegalArgumentException(name + ": введите десятичное число с точкой или запятой");
         }
-        return new BigDecimal(value);
+        return new BigDecimal(value.replace(',', '.'));
     }
 }

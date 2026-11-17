@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             : selected.every(input => xValues.includes(input.value))
                 ? '' : 'Выберите X из предложенных значений');
         yInput.setCustomValidity(yPattern.test(yInput.value)
-            ? '' : 'Введите число строго между -3 и 3, дробная часть через точку');
+            ? '' : 'Введите число строго между -3 и 3, дробная часть через точку или запятую');
         rInput.setCustomValidity(rValues.includes(rInput.value) ? '' : 'Выберите R от 1 до 5');
     }
 
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function isResult(item) {
         return item !== null && typeof item === 'object'
             && xValues.includes(item.x)
-            && typeof item.y === 'string' && yPattern.test(item.y)
+            && typeof item.y === 'string' && yPattern.test(item.y) && !item.y.includes(',')
             && rValues.includes(item.r)
             && typeof item.hit === 'boolean'
             && typeof item.currentTime === 'string' && Number.isFinite(Date.parse(item.currentTime))
