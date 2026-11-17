@@ -9,6 +9,6 @@ services:
       context: .
       target: web
     ports:
-      - "127.0.0.1:${PORT:-8080}:80"
+      - "${PORT:-8080}:80"
     depends_on:
       - backend

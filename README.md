@@ -31,6 +31,6 @@ docker compose logs -f
 ```
 
 Apache раздаёт HTML, CSS и JS и передаёт POST `/fcgi-bin/check` в Java FastCGI
-Порт Java доступен только внутри Docker
+Порт Java не опубликован на хост
 
 [Описание API](backend/README.md)
